@@ -13,8 +13,10 @@
 
 FROM golang:1.15 AS builder
 
-COPY .. /go/src/github.com/erda-project/erda-actions
+COPY . /go/src/github.com/erda-project/erda-actions
 WORKDIR /go/src/github.com/erda-project/erda-actions
+
+ENV GOPROXY https://goproxy.cn/,direct
 
 # go build
 RUN GOOS=linux GOARCH=amd64 go build -o /opt/action/run actions/tools-pkg-release/1.0/internal/cmd/main.go
