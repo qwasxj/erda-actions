@@ -113,7 +113,7 @@ DICE_VERSION_PATH="$TEMP"/version
 
 mkdir -p "$TEMP" && cd "$TEMP"
 cp -a "$REPO_VERSION_PATH" ./
-cp -a "/tmp/$DICE_VERSION"/* ./version/
+cp -a "/tmp/$DICE_VERSION" ./version/
 
 ## k8s 平台需生成个组件发布的 dice.yaml, dcos 平台需个组件发布的 dice.yaml
 cd "$DICE_VERSION_PATH" &&
@@ -164,7 +164,7 @@ if [ ! -d /dice-tools/versionpackage/"$DICE_VERSION" ]; then
                 if [ -d "$DICE_VERSION_PATH"/"$DICE_VERSION"/sqls/"$dir" ]; then
                     mkdir -pv ./dice-tools/versionpackage/"$DICE_VERSION"/"$dir"
                     cp "$DICE_VERSION_PATH"/"$DICE_VERSION"/sqls/"$dir"/* ./dice-tools/versionpackage/"$DICE_VERSION"/"$dir"/
-                if
+                fi
                 if [ -f "$DICE_VERSION_PATH"/"$DICE_VERSION"/sqls/"$dir" ]; then
                     cp "$DICE_VERSION_PATH"/"$DICE_VERSION"/sqls/"$dir" ./dice-tools/versionpackage/"$DICE_VERSION"
                 fi
@@ -193,6 +193,5 @@ echo "build tools successfully..."
 echo
 echo 'To Build Offline:'
 echo '    bash offline/build.sh'
-echo
-`
+echo`
 )
