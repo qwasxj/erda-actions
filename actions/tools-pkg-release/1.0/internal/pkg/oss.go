@@ -36,23 +36,44 @@ func (o *OSS) OssRemotePath(bucket, path string) string {
 	return fmt.Sprintf("oss://%s/%s", bucket, path)
 }
 
-func (o *OSS) ReleaseToolsPackage(private, public string) error {
+func (o *OSS) ReleaseToolsPackage(public, private string) error {
 
 	// upload public release installing pkg of erda
-	_, publicPkgName := path.Split(public)
-	publicPath := fmt.Sprintf("%s/%s", OssPkgReleasePublicPath, publicPkgName)
-	if err := o.UploadFile(private, OssPkgReleaseBucket, publicPath); err != nil {
-		return err
+	if public != "" {
+
+		if !path.IsAbs(public) {
+			return errors.Errorf("public release pkg path is "+
+				"not a absolute path: %s", public)
+		}
+
+		_, publicPkgName := path.Split(public)
+		publicPath := fmt.Sprintf("%s/%s", OssPkgReleasePublicPath, publicPkgName)
+		if err := o.UploadFile(public, OssPkgReleaseBucket, publicPath); err != nil {
+			return err
+		}
 	}
 
 	// upload enterprise release install pkg of erda
-	_, privatePkgName := path.Split(private)
-	privatePath := fmt.Sprintf("%s/%s", OssPkgReleasePrivatePath, privatePkgName)
-	if err := o.UploadFile(public, OssPkgReleaseBucket, privatePath); err != nil {
-		return err
+	if private != "" {
+
+		if !path.IsAbs(private) {
+			return errors.Errorf("private release pkg path is "+
+				"not a absolute path: %s", private)
+		}
+
+		_, privatePkgName := path.Split(private)
+		privatePath := fmt.Sprintf("%s/%s", OssPkgReleasePrivatePath, privatePkgName)
+		if err := o.UploadFile(private, OssPkgReleaseBucket, privatePath); err != nil {
+			return err
+		}
 	}
 
 	return nil
+}
+
+func (o *OSS) GenReleaseUrl(path string) string {
+	return fmt.Sprintf("http://%s.%s/%s/dice-tools.${%s}.tar.gz",
+		OssPkgReleaseBucket, o.oss.OssEndPoint, path, config.ErdaVersion())
 }
 
 func (o *OSS) PreparePatchRelease() error {
@@ -73,7 +94,7 @@ func (o *OSS) PreparePatchRelease() error {
 	// tar release
 	for _, tar := range tars {
 		if _, err := utils.ExecCmd(os.Stdout, os.Stderr, fmt.Sprintf("/tmp/%s/extensions", config.ErdaVersion()),
-			"tar", "-zxvf", "erda-actions.tar.gz"); err != nil {
+			"tar", "-zxvf", tar); err != nil {
 			return errors.WithMessage(err, fmt.Sprintf("decompress %s failed", tar))
 		}
 	}

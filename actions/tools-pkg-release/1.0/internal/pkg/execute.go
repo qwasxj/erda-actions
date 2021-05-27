@@ -1,13 +1,17 @@
 package pkg
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/erda-project/erda/pkg/filehelper"
+	"github.com/sirupsen/logrus"
 	"os"
 	"path"
 	"time"
 
 	"github.com/erda-project/erda-actions/actions/tools-pkg-release/1.0/internal/config"
 	"github.com/erda-project/erda-actions/actions/tools-pkg-release/1.0/internal/utils"
+	"github.com/erda-project/erda/apistructs"
 	"github.com/pkg/errors"
 )
 
@@ -41,16 +45,20 @@ func Execute() error {
 		return err
 	}
 
-	// env print
-	env.ShowInitEnvs()
-
 	// tool-pack execute
-	releaseInfo, _ := ToolsRelease()
-	//if err != nil {
-	//	return err
-	//}
+	releaseInfo, err := ToolsRelease()
+	if err != nil {
+		return err
+	}
 
-	fmt.Println(releaseInfo)
+	// upload release install pkg of erda
+	if err := oss.ReleaseToolsPackage(releaseInfo[PUBLIC],
+		releaseInfo[PRIVATE]); err != nil {
+		return err
+	}
+
+	// write metafile
+	WriteMetaFile()
 
 	// wait
 	for _, i := range make([]int, 10000) {
@@ -73,9 +81,10 @@ func ToolsRelease() (map[string]string, error) {
 	}
 
 	pkgInfo := map[string]string{
-		PUBLIC: path.Join(GetRepoToolsPath(), fmt.Sprintf(
-			"dice-tools.%s.tar.gz", config.ErdaVersion())),
-		PRIVATE: path.Join(GetRepoErdaReleasePath(), fmt.Sprintf(
+		//PUBLIC: path.Join(GetRepoErdaReleasePath(), fmt.Sprintf(
+		//	"dice-tools.%s.tar.gz", config.ErdaVersion())),
+		PUBLIC: "",
+		PRIVATE: path.Join(GetRepoToolsPath(), fmt.Sprintf(
 			"erda-release.%s.tar.gz", config.ErdaVersion())),
 	}
 
@@ -95,4 +104,28 @@ func EnterprisePkgRelease() error {
 
 func PublicPkgRelease() error {
 	return nil
+}
+
+func WriteMetaFile() {
+	oss := NewOss()
+
+	// write metafile
+	metaInfos := make([]apistructs.MetadataField, 0, 1)
+	metaInfos = append(metaInfos, apistructs.MetadataField{
+		Name:  config.MetaErdaVersion,
+		Value: config.ErdaVersion(),
+	})
+	metaInfos = append(metaInfos, apistructs.MetadataField{
+		Name:  config.MetaPublicUrl,
+		Value: oss.GenReleaseUrl(OssPkgReleasePublicPath),
+	})
+	metaInfos = append(metaInfos, apistructs.MetadataField{
+		Name:  config.MetaPrivateUrl,
+		Value: oss.GenReleaseUrl(OssPkgReleasePrivatePath),
+	})
+
+	metaByte, _ := json.Marshal(apistructs.ActionCallback{Metadata: metaInfos})
+	if err := filehelper.CreateFile(config.MetaFile(), string(metaByte), 0644); err != nil {
+		logrus.Warnf("failed to write metafile, %v", err)
+	}
 }

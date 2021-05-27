@@ -56,9 +56,9 @@ params:
       - { name: accessKeySecret, type: string, default: , desc: "secret key of oss" }
 
 outputs:
-  - name: erda_version
-  - name: public_url
-    type: private_url
+  - name: erdaVersion
+  - name: publicUrl
+    type: privateUrl
 
 
 accessibleAPIs:

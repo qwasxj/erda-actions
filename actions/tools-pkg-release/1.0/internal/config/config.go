@@ -22,9 +22,9 @@ import (
 
 // metafile keys
 const (
-	ERDA_VERSION = "ERDA_VERSION"
-	PUBLIC_URL   = "PUBLIC_URL"
-	PRIVATE_URL  = "PRIVATE_URL"
+	MetaErdaVersion = "erdaVersion"
+	MetaPublicUrl   = "publicUrl"
+	MetaPrivateUrl  = "privateUrl"
 )
 
 var c *config
@@ -132,6 +132,10 @@ func ApplicationID() uint64 {
 
 func ApplicationName() string {
 	return configuration().AppName
+}
+
+func MetaFile() string {
+	return configuration().MetaFilename
 }
 
 func initLog() {
