@@ -24,6 +24,11 @@ func Execute() error {
 		return err
 	}
 
+	// prepare patch release of some version specified by erda_version
+	if err := oss.PreparePatchRelease(); err != nil {
+		return err
+	}
+
 	// prepare repo to use
 	repo := NewRepo()
 	if err := repo.PrepareRepo(); err != nil {

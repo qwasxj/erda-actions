@@ -3,11 +3,12 @@ package utils
 import (
 	"bytes"
 	"fmt"
-	"github.com/pkg/errors"
 	"io"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 func copyAndCapture(w io.Writer, r io.Reader) ([]byte, error) {

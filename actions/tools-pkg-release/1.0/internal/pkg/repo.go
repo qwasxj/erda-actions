@@ -77,7 +77,7 @@ func ReplaceBuildScript() error {
 	// build script in tools
 	if err := ioutil.WriteFile(path.Join(GetRepoToolsPath(), "build"),
 		[]byte(bin.PrivateExecuteScript), 0666); err != nil {
-		fmt.Println(err)
+		logrus.Info(err)
 		return err
 	}
 

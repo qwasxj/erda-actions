@@ -1,11 +1,11 @@
 package pkg
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/erda-project/erda-actions/actions/tools-pkg-release/1.0/internal/config"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -85,16 +85,16 @@ func (e *Env) InitEnv() error {
 }
 
 func (e *Env) ShowInitEnvs() {
-	fmt.Printf("init envs:\n")
-	fmt.Printf("%s: %v", RepoTools, os.Getenv(RepoTools))
-	fmt.Printf("%s: %v", RepoRelease, os.Getenv(RepoRelease))
-	fmt.Printf("%s: %v", RepoVersion, os.Getenv(RepoVersion))
-	fmt.Printf("%s: %v", ErdaVersion, os.Getenv(ErdaVersion))
-	fmt.Printf("%s: %v", OssEndPoint, os.Getenv(OssEndPoint))
-	fmt.Printf("%s: %v", OssAccessKeyId, os.Getenv(OssAccessKeyId))
-	fmt.Printf("%s: %v", OssAccessKeySecret, os.Getenv(OssAccessKeySecret))
-	fmt.Printf("%s: %v", RepoToolsPath, os.Getenv(RepoToolsPath))
-	fmt.Printf("%s: %v", RepoReleasePath, os.Getenv(RepoReleasePath))
-	fmt.Printf("%s: %v", RepoVersionPath, os.Getenv(RepoVersionPath))
-	fmt.Printf("%s: %v", ArchivePatch, os.Getenv(ArchivePatch))
+	logrus.Info("init envs:\n")
+	logrus.Info("%s: %v", RepoTools, os.Getenv(RepoTools))
+	logrus.Info("%s: %v", RepoRelease, os.Getenv(RepoRelease))
+	logrus.Info("%s: %v", RepoVersion, os.Getenv(RepoVersion))
+	logrus.Info("%s: %v", ErdaVersion, os.Getenv(ErdaVersion))
+	logrus.Info("%s: %v", OssEndPoint, os.Getenv(OssEndPoint))
+	logrus.Info("%s: %v", OssAccessKeyId, os.Getenv(OssAccessKeyId))
+	logrus.Info("%s: %v", OssAccessKeySecret, os.Getenv(OssAccessKeySecret))
+	logrus.Info("%s: %v", RepoToolsPath, os.Getenv(RepoToolsPath))
+	logrus.Info("%s: %v", RepoReleasePath, os.Getenv(RepoReleasePath))
+	logrus.Info("%s: %v", RepoVersionPath, os.Getenv(RepoVersionPath))
+	logrus.Info("%s: %v", ArchivePatch, os.Getenv(ArchivePatch))
 }
