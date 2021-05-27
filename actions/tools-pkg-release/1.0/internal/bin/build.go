@@ -110,24 +110,13 @@ make $args os=linux buildos=$buildos
 CURRENT_PATH="$PWD"
 TEMP="$PWD"/build_temp
 DICE_VERSION_PATH="$TEMP"/version
-ERDA_ADDON_PATH="$TEMP"/erda-addons
-ERDA_ADDON_ENTERPRISE_PATH="$TEMP"/erda-addons-enterprise
-ERDA_ACTION_ENTERPRISE_PATH="$TEMP"/erda-actions-enterprise
-ERDA_ACTION_PATH="$TEMP"/erda-actions
 
-mkdir  -p "$TEMP" && cd "$TEMP"
-git clone  https://git:xxx@erda-org.app.terminus.io/wb/erda-project/version
-git clone https://oauth2:xxx@github.com/erda-project/erda-actions-enterprise.git
-git clone https://github.com/erda-project/erda-actions.git
-git clone https://oauth2:xxx@github.com/erda-project/erda-addons.git
-git clone https://oauth2:xxx@github.com/erda-project/erda-addons-enterprise.git
+mkdir -p "$TEMP" && cd "$TEMP"
+cp -a "$REPO_VERSION_PATH" ./
+cp -a "/tmp/$DICE_VERSION"/* ./version/
 
 ## k8s 平台需生成个组件发布的 dice.yaml, dcos 平台需个组件发布的 dice.yaml
 cd "$DICE_VERSION_PATH" &&
-git checkout feature/erda_version_switch
-cp -a 4.0 v1.0.0-rc
-cp -a 4.0 v1.0.0
-cp -a 4.0 v1.1.1-rc
 ./compose.sh "$DICE_VERSION"
 
 cd "$CURRENT_PATH" &&
@@ -139,10 +128,10 @@ cp -r "$DICE_VERSION_PATH"/"$DICE_VERSION"/releases ./dice-tools/versionpackage
 if [ ! -d ./dice-tools/versionpackage/extensions ]; then
     mkdir -p ./dice-tools/versionpackage/extensions
 fi
-cp -r "$ERDA_ACTION_PATH"/actions ./dice-tools/versionpackage/extensions
-cp -r "$ERDA_ACTION_ENTERPRISE_PATH"/actions/* ./dice-tools/versionpackage/extensions/actions/
-cp -r "$ERDA_ADDON_PATH"/addons ./dice-tools/versionpackage/extensions
-cp -r "$ERDA_ADDON_ENTERPRISE_PATH"/addons/* ./dice-tools/versionpackage/extensions/addons
+cp -r /tmp/"$DICE_VERSION"/extensions/erda-actions/actions ./dice-tools/versionpackage/extensions
+cp -r /tmp/"$DICE_VERSION"/extensions/erda-actions-enterprise/actions/* ./dice-tools/versionpackage/extensions/actions/
+cp -r /tmp/"$DICE_VERSION"/extensions/erda-addons/addons ./dice-tools/versionpackage/extensions
+cp -r /tmp/"$DICE_VERSION"/extensions/erda-addons-enterprise/addons/* ./dice-tools/versionpackage/extensions/addons
 
 ## 下载 dice cli
 curl -o ./dice-tools/bin/dice http://terminus-dice.oss.aliyuncs.com/installer/dice-${MAIN_BETA_VERSION}
@@ -172,8 +161,13 @@ if [ ! -d /dice-tools/versionpackage/"$DICE_VERSION" ]; then
         fi
         if [ -d "$DICE_VERSION_PATH/$DICE_VERSION/sqls" ]; then
             for dir in $(ls "$DICE_VERSION_PATH"/"$DICE_VERSION"/sqls); do
-                mkdir -pv ./dice-tools/versionpackage/"$DICE_VERSION"/"$dir"
-                cp "$DICE_VERSION_PATH"/"$DICE_VERSION"/sqls/"$dir"/* ./dice-tools/versionpackage/"$DICE_VERSION"/"$dir"/
+                if [ -d "$DICE_VERSION_PATH"/"$DICE_VERSION"/sqls/"$dir" ]; then
+                    mkdir -pv ./dice-tools/versionpackage/"$DICE_VERSION"/"$dir"
+                    cp "$DICE_VERSION_PATH"/"$DICE_VERSION"/sqls/"$dir"/* ./dice-tools/versionpackage/"$DICE_VERSION"/"$dir"/
+                if
+                if [ -f "$DICE_VERSION_PATH"/"$DICE_VERSION"/sqls/"$dir" ]; then
+                    cp "$DICE_VERSION_PATH"/"$DICE_VERSION"/sqls/"$dir" ./dice-tools/versionpackage/"$DICE_VERSION"
+                fi
             done
         fi
     ## version does not exist
@@ -189,7 +183,7 @@ cp -r "$DICE_VERSION_PATH/3.9/init/sqls" ./dice-tools/versionpackage
 if [[ -f "$DICE_VERSION_PATH"/dice.yaml ]]; then
     rm "$DICE_VERSION_PATH"/dice.yaml
 fi
-rm -rf "$TEMP"
+#rm -rf "$TEMP"
 
 cat ./dice-tools/versionpackage/dice.yaml | grep '^\s*image:' | sed 's/^\s*image:\s*//' | sort -u >> ./offline/dice.txt
 find ./dice-tools/versionpackage/extensions -name dice.yml -exec grep -F image: {} \; | sed -e 's/^\s*image:\s*//' -e 's/^\s*DEFAULT_DEP_CACHE_IMAGE:\s*//' | sed '/^\s*$/d' | sort -u > ./offline/ext.txt

@@ -72,7 +72,7 @@ func (o *OSS) PreparePatchRelease() error {
 
 	// tar release
 	for _, tar := range tars {
-		if _, err := utils.ExecCmd(os.Stdout, os.Stderr, fmt.Sprintf("/tmp/%s", config.ErdaVersion()),
+		if _, err := utils.ExecCmd(os.Stdout, os.Stderr, fmt.Sprintf("/tmp/%s/extensions", config.ErdaVersion()),
 			"tar", "-zxvf", "erda-actions.tar.gz"); err != nil {
 			return errors.WithMessage(err, fmt.Sprintf("decompress %s failed", tar))
 		}

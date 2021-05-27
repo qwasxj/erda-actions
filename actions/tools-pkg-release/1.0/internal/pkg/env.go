@@ -85,16 +85,16 @@ func (e *Env) InitEnv() error {
 }
 
 func (e *Env) ShowInitEnvs() {
-	logrus.Info("init envs:\n")
-	logrus.Info("%s: %v", RepoTools, os.Getenv(RepoTools))
-	logrus.Info("%s: %v", RepoRelease, os.Getenv(RepoRelease))
-	logrus.Info("%s: %v", RepoVersion, os.Getenv(RepoVersion))
-	logrus.Info("%s: %v", ErdaVersion, os.Getenv(ErdaVersion))
-	logrus.Info("%s: %v", OssEndPoint, os.Getenv(OssEndPoint))
-	logrus.Info("%s: %v", OssAccessKeyId, os.Getenv(OssAccessKeyId))
-	logrus.Info("%s: %v", OssAccessKeySecret, os.Getenv(OssAccessKeySecret))
-	logrus.Info("%s: %v", RepoToolsPath, os.Getenv(RepoToolsPath))
-	logrus.Info("%s: %v", RepoReleasePath, os.Getenv(RepoReleasePath))
-	logrus.Info("%s: %v", RepoVersionPath, os.Getenv(RepoVersionPath))
-	logrus.Info("%s: %v", ArchivePatch, os.Getenv(ArchivePatch))
+	logrus.Infof("init envs:\n")
+	logrus.Infof("%s: %v", RepoTools, os.Getenv(RepoTools))
+	logrus.Infof("%s: %v", RepoRelease, os.Getenv(RepoRelease))
+	logrus.Infof("%s: %v", RepoVersion, os.Getenv(RepoVersion))
+	logrus.Infof("%s: %v", ErdaVersion, os.Getenv(ErdaVersion))
+	logrus.Infof("%s: %v", OssEndPoint, os.Getenv(OssEndPoint))
+	logrus.Infof("%s: %v", OssAccessKeyId, os.Getenv(OssAccessKeyId))
+	logrus.Infof("%s: %v", OssAccessKeySecret, os.Getenv(OssAccessKeySecret))
+	logrus.Infof("%s: %v", RepoToolsPath, os.Getenv(RepoToolsPath))
+	logrus.Infof("%s: %v", RepoReleasePath, os.Getenv(RepoReleasePath))
+	logrus.Infof("%s: %v", RepoVersionPath, os.Getenv(RepoVersionPath))
+	logrus.Infof("%s: %v", ArchivePatch, os.Getenv(ArchivePatch))
 }
