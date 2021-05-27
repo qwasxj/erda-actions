@@ -72,7 +72,7 @@ func (o *OSS) ReleaseToolsPackage(public, private string) error {
 }
 
 func (o *OSS) GenReleaseUrl(path string) string {
-	return fmt.Sprintf("http://%s.%s/%s/dice-tools.${%s}.tar.gz",
+	return fmt.Sprintf("http://%s.%s/%s/dice-tools.%s.tar.gz",
 		OssPkgReleaseBucket, o.oss.OssEndPoint, path, config.ErdaVersion())
 }
 

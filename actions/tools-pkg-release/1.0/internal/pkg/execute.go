@@ -82,10 +82,10 @@ func ToolsRelease() (map[string]string, error) {
 
 	pkgInfo := map[string]string{
 		//PUBLIC: path.Join(GetRepoErdaReleasePath(), fmt.Sprintf(
-		//	"dice-tools.%s.tar.gz", config.ErdaVersion())),
+		//	"erda-release.%s.tar.gz", config.ErdaVersion())),
 		PUBLIC: "",
 		PRIVATE: path.Join(GetRepoToolsPath(), fmt.Sprintf(
-			"erda-release.%s.tar.gz", config.ErdaVersion())),
+			"dice-tools.%s.tar.gz", config.ErdaVersion())),
 	}
 
 	return pkgInfo, nil
@@ -99,6 +99,12 @@ func EnterprisePkgRelease() error {
 		return errors.WithMessage(err, "build enterprise erda install package")
 	}
 
+	// compress enterprise install package of erda
+	_, err = utils.ExecCmd(os.Stdout, os.Stderr, GetRepoToolsPath(), "make", "tar")
+	if err != nil {
+		return errors.WithMessage(err, "build enterprise erda install package")
+	}
+
 	return nil
 }
 
@@ -108,6 +114,8 @@ func PublicPkgRelease() error {
 
 func WriteMetaFile() {
 	oss := NewOss()
+
+	logrus.Infof("start to write metafile")
 
 	// write metafile
 	metaInfos := make([]apistructs.MetadataField, 0, 1)
@@ -128,4 +136,6 @@ func WriteMetaFile() {
 	if err := filehelper.CreateFile(config.MetaFile(), string(metaByte), 0644); err != nil {
 		logrus.Warnf("failed to write metafile, %v", err)
 	}
+
+	logrus.Infof("write metafile success...")
 }
