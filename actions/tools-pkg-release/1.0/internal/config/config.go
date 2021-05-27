@@ -15,6 +15,7 @@
 package config
 
 import (
+	"github.com/erda-project/erda-actions/actions/tools-pkg-release/1.0/internal/pkg"
 	"github.com/erda-project/erda-actions/pkg/log"
 	"github.com/erda-project/erda/pkg/envconf"
 	"github.com/sirupsen/logrus"
@@ -22,9 +23,9 @@ import (
 
 // metafile keys
 const (
-	ERDA_VERSION 	= 	"ERDA_VERSION"
-	PUBLIC_URL		=	"PUBLIC_URL"
-	PRIVATE_URL		=	"PRIVATE_URL"
+	ERDA_VERSION = "ERDA_VERSION"
+	PUBLIC_URL   = "PUBLIC_URL"
+	PRIVATE_URL  = "PRIVATE_URL"
 )
 
 var c *config
@@ -51,15 +52,15 @@ type config struct {
 	PipelineTaskID    string `env:"PIPELINE_TASK_ID"`
 
 	// action parameters
-	ErdaVersion		string	`env:"ACTION_ERDA_VERSION"`
-	RepoErdaTools	string	`env:"ACTION_REPO_ERDA_TOOLS"`
-	RepoErdaRelease string	`env:"ACTION_REPO_ERDA_RELEASE"`
-	RepoVersion		string	`env:"ACTION_REPO_VERSION"`
+	ErdaVersion     string   `env:"ACTION_ERDA_VERSION"`
+	RepoErdaTools   string   `env:"ACTION_REPO_ERDA_TOOLS"`
+	RepoErdaRelease string   `env:"ACTION_REPO_ERDA_RELEASE"`
+	RepoVersion     string   `env:"ACTION_REPO_VERSION"`
+	OSS             *pkg.OSS `env:"ACTION_OSS"`
 
 	// other parameters
 	MetaFilename string `env:"METAFILE"`
 }
-
 
 type RegistryReplacement struct {
 	Old string `json:"old"`
@@ -103,6 +104,17 @@ func RepoErdaRelease() string {
 
 func RepoVersion() string {
 	return configuration().RepoVersion
+}
+
+func OssInfo() *pkg.OSS {
+
+	oss := configuration().OSS
+
+	if oss.OssEndPoint == "" {
+		oss.OssEndPoint = "oss.aliyuncs.com"
+	}
+
+	return oss
 }
 
 func ProjectName() string {

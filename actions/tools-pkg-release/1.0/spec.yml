@@ -46,6 +46,15 @@ params:
     desc: the repository of version. get from forener action git-checkout
     required: true
 
+  - name: oss
+    type: struct
+    desc: the config info of oss
+    required: true
+    struct:
+      - { name: endpoint, type: string, default: "", desc: "endpoint of oss" }
+      - { name: accessKeyID, type: string, default: master, desc: "access key of oss" }
+      - { name: accessKeySecret, type: string, default: , desc: "secret key of oss" }
+
 outputs:
   - name: erda_version
   - name: public_url
