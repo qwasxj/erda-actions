@@ -116,11 +116,11 @@ ERDA_ACTION_ENTERPRISE_PATH="$TEMP"/erda-actions-enterprise
 ERDA_ACTION_PATH="$TEMP"/erda-actions
 
 mkdir  -p "$TEMP" && cd "$TEMP"
-git clone  https://git:2f4e233431b844ea964f488da61e1de4@erda-org.app.terminus.io/wb/erda-project/version
-git clone https://oauth2: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@github.com/erda-project/erda-actions-enterprise.git
+git clone  https://git:xxx@erda-org.app.terminus.io/wb/erda-project/version
+git clone https://oauth2:xxx@github.com/erda-project/erda-actions-enterprise.git
 git clone https://github.com/erda-project/erda-actions.git
-git clone https://oauth2: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@github.com/erda-project/erda-addons.git
-git clone https://oauth2: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@github.com/erda-project/erda-addons-enterprise.git
+git clone https://oauth2:xxx@github.com/erda-project/erda-addons.git
+git clone https://oauth2:xxx@github.com/erda-project/erda-addons-enterprise.git
 
 ## k8s 平台需生成个组件发布的 dice.yaml, dcos 平台需个组件发布的 dice.yaml
 cd "$DICE_VERSION_PATH" &&
