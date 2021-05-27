@@ -22,13 +22,13 @@ const (
 )
 
 type OSS struct {
-	OssEndPoint        string `json:"endpoint"`
-	OssAccessKeyId     string `json:"accessKeyID"`
-	OssAccessKeySecret string `json:"accessKeySecret"`
+	oss *config.OSS
 }
 
 func NewOss() *OSS {
-	return config.OssInfo()
+	return &OSS{
+		config.OssInfo(),
+	}
 }
 
 func (o *OSS) OssRemotePath(bucket, path string) string {
@@ -77,7 +77,7 @@ func (o *OSS) InitOssConfig() error {
 
 	// oss config
 	ossConfig := fmt.Sprintf("oss\\n[Credentials]\\nlanguage=CH\\nendpoint=%s\\naccessKeyID="+
-		"%s\\naccessKeySecret=%s", o.OssEndPoint, o.OssAccessKeyId, o.OssAccessKeySecret)
+		"%s\\naccessKeySecret=%s", o.oss.OssEndPoint, o.oss.OssAccessKeyId, o.oss.OssAccessKeySecret)
 	if err := ioutil.WriteFile(ossConfigPath, []byte(ossConfig), 0666); err != nil {
 		fmt.Println(err)
 		return err

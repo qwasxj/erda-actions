@@ -15,7 +15,6 @@
 package config
 
 import (
-	"github.com/erda-project/erda-actions/actions/tools-pkg-release/1.0/internal/pkg"
 	"github.com/erda-project/erda-actions/pkg/log"
 	"github.com/erda-project/erda/pkg/envconf"
 	"github.com/sirupsen/logrus"
@@ -52,11 +51,11 @@ type config struct {
 	PipelineTaskID    string `env:"PIPELINE_TASK_ID"`
 
 	// action parameters
-	ErdaVersion     string   `env:"ACTION_ERDA_VERSION"`
-	RepoErdaTools   string   `env:"ACTION_REPO_ERDA_TOOLS"`
-	RepoErdaRelease string   `env:"ACTION_REPO_ERDA_RELEASE"`
-	RepoVersion     string   `env:"ACTION_REPO_VERSION"`
-	OSS             *pkg.OSS `env:"ACTION_OSS"`
+	ErdaVersion     string `env:"ACTION_ERDA_VERSION"`
+	RepoErdaTools   string `env:"ACTION_REPO_ERDA_TOOLS"`
+	RepoErdaRelease string `env:"ACTION_REPO_ERDA_RELEASE"`
+	RepoVersion     string `env:"ACTION_REPO_VERSION"`
+	OSS             *OSS   `env:"ACTION_OSS"`
 
 	// other parameters
 	MetaFilename string `env:"METAFILE"`
@@ -65,6 +64,12 @@ type config struct {
 type RegistryReplacement struct {
 	Old string `json:"old"`
 	New string `json:"new"`
+}
+
+type OSS struct {
+	OssEndPoint        string `json:"endpoint"`
+	OssAccessKeyId     string `json:"accessKeyID"`
+	OssAccessKeySecret string `json:"accessKeySecret"`
 }
 
 func configuration() *config {
@@ -106,7 +111,7 @@ func RepoVersion() string {
 	return configuration().RepoVersion
 }
 
-func OssInfo() *pkg.OSS {
+func OssInfo() *OSS {
 
 	oss := configuration().OSS
 
