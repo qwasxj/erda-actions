@@ -14,11 +14,11 @@ import (
 )
 
 const (
-	OssArchiveBucket         = "terminus-dice"
-	OssArchivePath           = "xj/versions"
-	OssPkgReleaseBucket      = "terminus-dice"
-	OssPkgReleasePublicPath  = "installer/tools_pkg"
-	OssPkgReleasePrivatePath = "xj/tools_pkg"
+	OssArchiveBucket         = "erda-release"
+	OssArchivePath           = "archived-versions"
+	OssPkgReleaseBucket      = "erda-release"
+	OssPkgReleasePublicPath  = "erda"
+	OssPkgReleasePrivatePath = "enterprise"
 )
 
 type OSS struct {
@@ -71,8 +71,13 @@ func (o *OSS) ReleaseToolsPackage(public, private string) error {
 	return nil
 }
 
-func (o *OSS) GenReleaseUrl(path string) string {
+func (o *OSS) GenPrivateReleaseUrl(path string) string {
 	return fmt.Sprintf("http://%s.%s/%s/dice-tools.%s.tar.gz",
+		OssPkgReleaseBucket, o.oss.OssEndPoint, path, config.ErdaVersion())
+}
+
+func (o *OSS) GenPublicReleaseUrl(path string) string {
+	return fmt.Sprintf("http://%s.%s/%s/erda-release.%s.tar.gz",
 		OssPkgReleaseBucket, o.oss.OssEndPoint, path, config.ErdaVersion())
 }
 
@@ -182,7 +187,7 @@ func (o *OSS) InitOssConfig() error {
 	ossConfigPath := path.Join(home, ".ossutilconfig")
 
 	// oss config
-	ossConfig := fmt.Sprintf("oss\n[Credentials]\nlanguage=CH\nendpoint=%s\naccessKeyID="+
+	ossConfig := fmt.Sprintf("[Credentials]\nlanguage=CH\nendpoint=%s\naccessKeyID="+
 		"%s\naccessKeySecret=%s", o.oss.OssEndPoint, o.oss.OssAccessKeyId, o.oss.OssAccessKeySecret)
 	if err := ioutil.WriteFile(ossConfigPath, []byte(ossConfig), 0666); err != nil {
 		logrus.Error(err)

@@ -124,12 +124,12 @@ func WriteMetaFile() {
 		Value: config.ErdaVersion(),
 	})
 	metaInfos = append(metaInfos, apistructs.MetadataField{
-		Name:  config.MetaPublicUrl,
-		Value: oss.GenReleaseUrl(OssPkgReleasePublicPath),
+		Name:  config.MetaPrivateUrl,
+		Value: oss.GenPrivateReleaseUrl(OssPkgReleasePrivatePath),
 	})
 	metaInfos = append(metaInfos, apistructs.MetadataField{
-		Name:  config.MetaPrivateUrl,
-		Value: oss.GenReleaseUrl(OssPkgReleasePrivatePath),
+		Name:  config.MetaPublicUrl,
+		Value: oss.GenPublicReleaseUrl(OssPkgReleasePublicPath),
 	})
 
 	metaByte, _ := json.Marshal(apistructs.ActionCallback{Metadata: metaInfos})
