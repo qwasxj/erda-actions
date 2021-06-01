@@ -180,7 +180,7 @@ cp -r "$DICE_VERSION_PATH/3.9/init/sqls" ./dice-tools/versionpackage
 if [[ -f "$DICE_VERSION_PATH"/dice.yaml ]]; then
     rm "$DICE_VERSION_PATH"/dice.yaml
 fi
-#rm -rf "$TEMP"
+rm -rf "$TEMP"
 
 cat ./dice-tools/versionpackage/dice.yaml | grep '^\s*image:' | sed 's/^\s*image:\s*//' | sort -u >> ./offline/dice.txt
 find ./dice-tools/versionpackage/extensions -name dice.yml -exec grep -F image: {} \; | sed -e 's/^\s*image:\s*//' -e 's/^\s*DEFAULT_DEP_CACHE_IMAGE:\s*//' | sed '/^\s*$/d' | sort -u > ./offline/ext.txt

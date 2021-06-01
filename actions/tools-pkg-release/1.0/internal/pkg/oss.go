@@ -19,6 +19,11 @@ const (
 	OssPkgReleaseBucket      = "erda-release"
 	OssPkgReleasePublicPath  = "erda"
 	OssPkgReleasePrivatePath = "enterprise"
+
+	OssAclPublicReadWrite = "public-read-write"
+	OssAclPublicRead      = "public-read"
+	OssAclPrivate         = "private"
+	OssAclDefault         = "default"
 )
 
 type OSS struct {
@@ -48,7 +53,7 @@ func (o *OSS) ReleaseToolsPackage(public, private string) error {
 
 		_, publicPkgName := path.Split(public)
 		publicPath := fmt.Sprintf("%s/%s", OssPkgReleasePublicPath, publicPkgName)
-		if err := o.UploadFile(public, OssPkgReleaseBucket, publicPath); err != nil {
+		if err := o.UploadFile(public, OssPkgReleaseBucket, publicPath, OssAclPublicRead); err != nil {
 			return err
 		}
 	}
@@ -63,7 +68,7 @@ func (o *OSS) ReleaseToolsPackage(public, private string) error {
 
 		_, privatePkgName := path.Split(private)
 		privatePath := fmt.Sprintf("%s/%s", OssPkgReleasePrivatePath, privatePkgName)
-		if err := o.UploadFile(private, OssPkgReleaseBucket, privatePath); err != nil {
+		if err := o.UploadFile(private, OssPkgReleaseBucket, privatePath, OssAclPublicRead); err != nil {
 			return err
 		}
 	}
@@ -107,7 +112,7 @@ func (o *OSS) PreparePatchRelease() error {
 	return nil
 }
 
-func (o *OSS) UploadFile(local, bucket, path string) error {
+func (o *OSS) UploadFile(local, bucket, path, acl string) error {
 
 	exists, err := utils.FileExist(local)
 	if err != nil {
@@ -119,7 +124,12 @@ func (o *OSS) UploadFile(local, bucket, path string) error {
 
 	remote := o.OssRemotePath(bucket, path)
 
-	_, err = utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", local, remote)
+	if acl == "" {
+		_, err = utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", local, remote)
+	} else {
+		_, err = utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64",
+			"cp", fmt.Sprintf("--acl=%s", acl), local, remote)
+	}
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("upload file %s to %s failed", local, remote))
 	}
@@ -128,7 +138,7 @@ func (o *OSS) UploadFile(local, bucket, path string) error {
 	return nil
 }
 
-func (o *OSS) UploadDir(dir, bucket, path string) error {
+func (o *OSS) UploadDir(dir, bucket, path, acl string) error {
 
 	exists, err := utils.IsDirExists(dir)
 	if err != nil {
@@ -140,7 +150,12 @@ func (o *OSS) UploadDir(dir, bucket, path string) error {
 
 	remote := o.OssRemotePath(bucket, path)
 
-	_, err = utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", "-r", dir, path)
+	if acl == "" {
+		_, err = utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", "-r", dir, path)
+	} else {
+		_, err = utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", "-r",
+			fmt.Sprintf("--acl=%s", acl), dir, path)
+	}
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("upload file %s to %s failed", dir, remote))
 	}

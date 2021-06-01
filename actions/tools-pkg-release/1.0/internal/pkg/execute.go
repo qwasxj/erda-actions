@@ -3,16 +3,15 @@ package pkg
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/erda-project/erda/pkg/filehelper"
-	"github.com/sirupsen/logrus"
 	"os"
 	"path"
-	"time"
 
 	"github.com/erda-project/erda-actions/actions/tools-pkg-release/1.0/internal/config"
 	"github.com/erda-project/erda-actions/actions/tools-pkg-release/1.0/internal/utils"
 	"github.com/erda-project/erda/apistructs"
+	"github.com/erda-project/erda/pkg/filehelper"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -59,12 +58,6 @@ func Execute() error {
 
 	// write metafile
 	WriteMetaFile()
-
-	// wait
-	for _, i := range make([]int, 10000) {
-		fmt.Println(i)
-		time.Sleep(time.Second * 3)
-	}
 	return nil
 }
 
