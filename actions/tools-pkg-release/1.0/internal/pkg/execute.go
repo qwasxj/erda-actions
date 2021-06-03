@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"time"
 
 	"github.com/erda-project/erda-actions/actions/tools-pkg-release/1.0/internal/config"
 	"github.com/erda-project/erda-actions/actions/tools-pkg-release/1.0/internal/utils"
@@ -56,8 +57,14 @@ func Execute() error {
 		return err
 	}
 
+	for i, _ := range make([]int, 10000) {
+		time.Sleep(time.Second * 3)
+		logrus.Println(i)
+	}
+
 	// write metafile
 	WriteMetaFile()
+
 	return nil
 }
 

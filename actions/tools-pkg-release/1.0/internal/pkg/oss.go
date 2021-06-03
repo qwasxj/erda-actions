@@ -125,10 +125,10 @@ func (o *OSS) UploadFile(local, bucket, path, acl string) error {
 	remote := o.OssRemotePath(bucket, path)
 
 	if acl == "" {
-		_, err = utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", local, remote)
+		_, err = utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", "-f", local, remote)
 	} else {
 		_, err = utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64",
-			"cp", fmt.Sprintf("--acl=%s", acl), local, remote)
+			"cp", "-f", fmt.Sprintf("--acl=%s", acl), local, remote)
 	}
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("upload file %s to %s failed", local, remote))
@@ -151,9 +151,9 @@ func (o *OSS) UploadDir(dir, bucket, path, acl string) error {
 	remote := o.OssRemotePath(bucket, path)
 
 	if acl == "" {
-		_, err = utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", "-r", dir, path)
+		_, err = utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", "-rf", dir, path)
 	} else {
-		_, err = utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", "-r",
+		_, err = utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", "-rf",
 			fmt.Sprintf("--acl=%s", acl), dir, path)
 	}
 	if err != nil {
@@ -167,7 +167,7 @@ func (o *OSS) UploadDir(dir, bucket, path, acl string) error {
 func (o *OSS) DownloadFile(local, bucket, path string) error {
 	remote := o.OssRemotePath(bucket, path)
 
-	_, err := utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", remote, local)
+	_, err := utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", "-f", remote, local)
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("download file %s to %s failed", remote, local))
 	}
@@ -179,7 +179,7 @@ func (o *OSS) DownloadFile(local, bucket, path string) error {
 func (o *OSS) DownloadDir(parent, bucket, path string) error {
 	remote := o.OssRemotePath(bucket, path)
 
-	_, err := utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", "-r", remote, parent)
+	_, err := utils.ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", "-rf", remote, parent)
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("download dir %s from to %s failed", remote, parent))
 	}
