@@ -14,4 +14,4 @@
 -->
 
 ### tools pkg release
-release erda install package：erda-tools.$erda_version.tar.gz(enterprise)、erda-release.$erda_version.tar.gz(public)
+  release erda install package for enterprise: dice-tools.$erda_version.tar.gz
