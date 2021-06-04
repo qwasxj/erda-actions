@@ -31,7 +31,7 @@ func CopyRepoToTmp(repoVolumePath string) error {
 }
 
 func ReplaceFile(content, path string, perm os.FileMode) error {
-	logrus.Info("start to write file %s...", path)
+	logrus.Infof("start to write file %s...", path)
 
 	// build script in tools
 	if err := ioutil.WriteFile(path, []byte(content), perm); err != nil {

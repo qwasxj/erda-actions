@@ -2,13 +2,13 @@ package pkg
 
 import (
 	"fmt"
-	"os"
-	"path"
-
 	"github.com/erda-project/erda-actions/actions/erda-pkg-release-enterprise/1.0/internal/config"
 	"github.com/erda-project/erda-actions/actions/erda-pkg-release-enterprise/1.0/pkg"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+	"os"
+	"path"
+	"time"
 )
 
 var osArches = []string{
@@ -40,13 +40,13 @@ func Execute() error {
 	// prepare patch release of some version specified by erda version
 	// when erda version before erda be public
 	if os.Getenv(pkg.ErdaToPublic) == pkg.True {
-		logrus.Printf("erda has push to public of this version %s. "+
+		logrus.Infof("erda has push to public of this version %s. "+
 			"Prepare patch version info", config.ErdaVersion())
 		if err := oss.PreparePatchRelease(config.ErdaVersion()); err != nil {
 			return err
 		}
 	} else {
-		logrus.Printf("erda has not push to public of this version %s. "+
+		logrus.Infof("erda has not push to public of this version %s. "+
 			"no need to prepare patch version info", config.ErdaVersion())
 	}
 
@@ -66,6 +66,11 @@ func Execute() error {
 	if err := pkg.WriteMetaFile(oss.GetOss(), config.MetaFile(), releasePkgInfo,
 		config.ErdaVersion(), pkg.OssPkgReleasePrivatePath, false); err != nil {
 		return err
+	}
+
+	for i, _ := range make([]int, 10000) {
+		time.Sleep(time.Second * 3)
+		fmt.Println(i)
 	}
 
 	return nil

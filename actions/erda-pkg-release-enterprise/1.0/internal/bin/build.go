@@ -113,7 +113,11 @@ DICE_VERSION_PATH="$TEMP"/version
 
 mkdir -p "$TEMP" && cd "$TEMP"
 cp -a "$REPO_VERSION_PATH" ./
-cp -a "/tmp/$DICE_VERSION" ./version/
+
+## 4.0 之后对应发版 version 的处理
+if [ "$ERDA_TO_PUBLIC" == "true" ]; then
+    cp -a "/tmp/$DICE_VERSION" ./version/
+fi
 
 ## k8s 平台需生成个组件发布的 dice.yaml, dcos 平台需个组件发布的 dice.yaml
 cd "$DICE_VERSION_PATH" &&
@@ -138,7 +142,7 @@ if [ "$ERDA_TO_PUBLIC" == "false" ]; then
     git clone https://"${GIT_ACCOUNT}":"${GIT_TOKEN}"@github.com/erda-project/erda-actions-enterprise.git
     git clone https://"${GIT_ACCOUNT}":"${GIT_TOKEN}"@github.com/erda-project/erda-addons.git
     git clone https://"${GIT_ACCOUNT}":"${GIT_TOKEN}"@github.com/erda-project/erda-addons-enterprise.git
-    cd "$CURRENT_PATH" &&
+    cd "$CURRENT_PATH" && echo $(pwd)
 fi
 
 cp -r /tmp/"$DICE_VERSION"/extensions/erda-actions/actions ./dice-tools/versionpackage/extensions
@@ -206,6 +210,5 @@ echo "build tools successfully..."
 echo
 echo 'To Build Offline:'
 echo '    bash offline/build.sh'
-echo
-`
+echo`
 )

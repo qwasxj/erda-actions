@@ -56,12 +56,12 @@ func (e *Env) InitEnv() error {
 
 func (e *Env) ShowEnv() {
 
-	logrus.Printf("%s %s", pkg.RepoVersionPath, os.Getenv(pkg.RepoVersionPath))
-	logrus.Printf("%s %s", pkg.RepoToolsPath, os.Getenv(pkg.RepoToolsPath))
-	logrus.Printf("%s %s", pkg.DiceVersion, os.Getenv(pkg.DiceVersion))
-	logrus.Printf("%s %s", pkg.ErdaToPublic, os.Getenv(pkg.ErdaToPublic))
-	logrus.Printf("%s %s", pkg.GitAccount, os.Getenv(pkg.GitAccount))
-	logrus.Printf("%s %s", pkg.GitToken, os.Getenv(pkg.GitToken))
+	logrus.Infof("%s %s", pkg.RepoVersionPath, os.Getenv(pkg.RepoVersionPath))
+	logrus.Infof("%s %s", pkg.RepoToolsPath, os.Getenv(pkg.RepoToolsPath))
+	logrus.Infof("%s %s", pkg.DiceVersion, os.Getenv(pkg.DiceVersion))
+	logrus.Infof("%s %s", pkg.ErdaToPublic, os.Getenv(pkg.ErdaToPublic))
+	logrus.Infof("%s %s", pkg.GitAccount, os.Getenv(pkg.GitAccount))
+	logrus.Infof("%s %s", pkg.GitToken, os.Getenv(pkg.GitToken))
 }
 
 func TmpRepoVersionPath() string {

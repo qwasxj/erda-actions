@@ -13,7 +13,7 @@
 
 jobs:
   dice-version-archive:
-    image: registry.cn-hangzhou.aliyuncs.com/dice/tools-pkg-release-action:20210602-1ef5a27
+    image: registry.cn-hangzhou.aliyuncs.com/dice/erda-pkg-release-enterprise-action:20210604-e363425
     resource:
       cpu: 0.5
       disk: 1.24

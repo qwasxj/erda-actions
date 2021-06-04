@@ -19,7 +19,7 @@ COPY . /go/src/github.com/erda-project/erda-actions
 WORKDIR /go/src/github.com/erda-project/erda-actions
 
 ENV GOPROXY https://goproxy.cn/,direct
-RUN GOOS=linux GOARCH=amd64 go build -o /opt/action/run actions/tools-pkg-release/1.0/internal/cmd/main.go
+RUN GOOS=linux GOARCH=amd64 go build -o /opt/action/run actions/erda-pkg-release-enterprise/1.0/internal/cmd/main.go
 
 
 ## work image
