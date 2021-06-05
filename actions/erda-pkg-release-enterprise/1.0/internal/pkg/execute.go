@@ -87,7 +87,7 @@ func ToolsRelease() (map[string]string, map[string]string, error) {
 		releasePkgInfo[osArch] = fmt.Sprintf("dice-tools.%s.tar.gz", config.ErdaVersion())
 	}
 
-	return releasePkgPathInfo, releasePkgPathInfo, nil
+	return releasePkgPathInfo, releasePkgInfo, nil
 }
 
 func EnterprisePkgRelease() error {
