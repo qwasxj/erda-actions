@@ -39,7 +39,7 @@ func ReplaceFile(content, path string, perm os.FileMode) error {
 		return err
 	}
 
-	logrus.Info("start to write file %s success!!", path)
+	logrus.Infof("start to write file %s success!!", path)
 	return nil
 }
 

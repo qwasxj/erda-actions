@@ -1,13 +1,11 @@
 package pkg
 
 import (
-	"os"
 	"path"
 
 	"github.com/erda-project/erda-actions/actions/erda-pkg-release-enterprise/1.0/internal/config"
 	"github.com/erda-project/erda-actions/actions/erda-pkg-release-enterprise/1.0/pkg"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 )
 
 type Env struct {
@@ -52,16 +50,6 @@ func (e *Env) InitEnv() error {
 	}
 
 	return nil
-}
-
-func (e *Env) ShowEnv() {
-
-	logrus.Infof("%s %s", pkg.RepoVersionPath, os.Getenv(pkg.RepoVersionPath))
-	logrus.Infof("%s %s", pkg.RepoToolsPath, os.Getenv(pkg.RepoToolsPath))
-	logrus.Infof("%s %s", pkg.DiceVersion, os.Getenv(pkg.DiceVersion))
-	logrus.Infof("%s %s", pkg.ErdaToPublic, os.Getenv(pkg.ErdaToPublic))
-	logrus.Infof("%s %s", pkg.GitAccount, os.Getenv(pkg.GitAccount))
-	logrus.Infof("%s %s", pkg.GitToken, os.Getenv(pkg.GitToken))
 }
 
 func TmpRepoVersionPath() string {

@@ -8,7 +8,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"os"
 	"path"
-	"time"
 )
 
 var osArches = []string{
@@ -34,8 +33,6 @@ func Execute() error {
 	if err := env.InitEnv(); err != nil {
 		return err
 	}
-
-	env.ShowEnv()
 
 	// prepare patch release of some version specified by erda version
 	// when erda version before erda be public
@@ -68,11 +65,6 @@ func Execute() error {
 		return err
 	}
 
-	for i, _ := range make([]int, 10000) {
-		time.Sleep(time.Second * 3)
-		fmt.Println(i)
-	}
-
 	return nil
 }
 
@@ -92,8 +84,7 @@ func ToolsRelease() (map[string]string, map[string]string, error) {
 		releasePkgPathInfo[osArch] = path.Join(TmpRepoToolsPath(), fmt.Sprintf(
 			"dice-tools.%s.tar.gz", config.ErdaVersion()))
 
-		releasePkgInfo[osArch] = path.Join(TmpRepoToolsPath(), fmt.Sprintf(
-			"dice-tools.%s.tar.gz", config.ErdaVersion()))
+		releasePkgInfo[osArch] = fmt.Sprintf("dice-tools.%s.tar.gz", config.ErdaVersion())
 	}
 
 	return releasePkgPathInfo, releasePkgPathInfo, nil
