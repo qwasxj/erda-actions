@@ -18,7 +18,7 @@ version: 1.0
 type: action
 category: deploy_management
 desc: >-
-  release erda install package for enterprise: erda.$erda_version.$os_arch.tar.gz
+  release erda install package for enterprise: erda-$erda_version.$os_arch.tar.gz
 
 public: true
 supportedVersion:

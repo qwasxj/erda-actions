@@ -30,7 +30,7 @@ func (r *Repo) PrepareRepo() error {
 	}
 
 	// erda-release execute script prepare
-	buildPackageScript := path.Join(TmpRepoErdaReleasePath(), "build_package.go")
+	buildPackageScript := path.Join(TmpRepoErdaReleasePath(), "build_package.sh")
 	if err := pkg.ReplaceFile(bin.PublicExecuteScript, buildPackageScript, 0666); err != nil {
 		return errors.WithMessage(err, "replace build_package script in erda-release")
 	}

@@ -14,4 +14,4 @@
 -->
 
 ### tools pkg release
-  release erda install package for public: erda.$erda_version.$os_arch.tar.gz
+  release erda install package for public: erda-$erda_version.$os_arch.tar.gz

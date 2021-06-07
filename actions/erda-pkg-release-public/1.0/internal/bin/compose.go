@@ -150,7 +150,7 @@ sed -i -e 's/<%/{{/g' ${fdp_deploy_yaml}
 sed -i -e 's/%>/}}/g' ${fdp_deploy_yaml}
 
 
-cat ${deploy_yaml} | sed '/  ^$/d' > dice.yaml
+cat ${deploy_yaml} | sed '/  ^$/d' > erda.yaml
 rm -f ${deploy_yaml}
 
 cat ${fdp_deploy_yaml} | sed '/  ^$/d' > fdp.yaml
