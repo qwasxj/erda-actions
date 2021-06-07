@@ -4,12 +4,10 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"time"
 
 	"github.com/erda-project/erda-actions/actions/erda-pkg-release-enterprise/1.0/pkg"
 	"github.com/erda-project/erda-actions/actions/erda-pkg-release-public/1.0/internal/config"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 )
 
 var osArches = []string{
@@ -57,11 +55,6 @@ func Execute() error {
 	if err := pkg.WriteMetaFile(oss.GetOss(), config.MetaFile(), releasePkgInfo,
 		config.ErdaVersion(), pkg.OssPkgReleasePublicPath, false); err != nil {
 		return err
-	}
-
-	for i, _ := range make([]int, 10000) {
-		logrus.Infof("%d", i)
-		time.Sleep(time.Second * 3)
 	}
 
 	return nil
