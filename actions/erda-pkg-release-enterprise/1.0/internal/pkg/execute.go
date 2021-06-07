@@ -2,12 +2,13 @@ package pkg
 
 import (
 	"fmt"
+	"os"
+	"path"
+
 	"github.com/erda-project/erda-actions/actions/erda-pkg-release-enterprise/1.0/internal/config"
 	"github.com/erda-project/erda-actions/actions/erda-pkg-release-enterprise/1.0/pkg"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"os"
-	"path"
 )
 
 var osArches = []string{
