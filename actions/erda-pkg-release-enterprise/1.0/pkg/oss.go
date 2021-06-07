@@ -54,7 +54,7 @@ func (o *oss) OssRemotePath(bucket, path string) string {
 	return fmt.Sprintf("oss://%s/%s", bucket, path)
 }
 
-func (o *oss) ReleaseToolsPackage(releasePathInfo map[string]string, releaseBucket,
+func (o *oss) ReleasePackage(releasePathInfo map[string]string, releaseBucket,
 	releasePath string, splitOsArch bool) error {
 
 	// upload release installing pkg of erda
@@ -62,7 +62,7 @@ func (o *oss) ReleaseToolsPackage(releasePathInfo map[string]string, releaseBuck
 
 		for osArch, pkgPath := range releasePathInfo {
 			if !path.IsAbs(pkgPath) {
-				return errors.Errorf("public release pkg path is "+
+				return errors.Errorf("release pkg path is "+
 					"not a absolute path: %s", pkgPath)
 			}
 

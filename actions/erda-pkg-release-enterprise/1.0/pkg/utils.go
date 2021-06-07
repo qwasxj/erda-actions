@@ -103,3 +103,7 @@ func FileExist(path string) (bool, error) {
 	}
 	return false, err
 }
+
+func GenErdaPublicName(version, osArch string) string {
+	return fmt.Sprintf("erda-%s.%s.tar.gz", version, osArch)
+}

@@ -12,7 +12,7 @@ import (
 )
 
 var osArches = []string{
-	"linux_x86",
+	"linux-x86",
 }
 
 func Execute() error {
@@ -49,13 +49,13 @@ func Execute() error {
 	}
 
 	// tool-pack execute
-	releasePkgPathInfo, releasePkgInfo, err := ToolsRelease()
+	releasePkgPathInfo, releasePkgInfo, err := ErdaPkgRelease()
 	if err != nil {
 		return err
 	}
 
 	// upload release install pkg of erda
-	if err := oss.ReleaseToolsPackage(releasePkgPathInfo, pkg.OssPkgReleaseBucket,
+	if err := oss.ReleasePackage(releasePkgPathInfo, pkg.OssPkgReleaseBucket,
 		pkg.OssPkgReleasePrivatePath, false); err != nil {
 		return err
 	}
@@ -69,9 +69,9 @@ func Execute() error {
 	return nil
 }
 
-// ToolsRelease to build some erda installing package with
+// ErdaPkgRelease to build some erda installing package with
 // some version specified by ERDA_VERSION
-func ToolsRelease() (map[string]string, map[string]string, error) {
+func ErdaPkgRelease() (map[string]string, map[string]string, error) {
 
 	if err := EnterprisePkgRelease(); err != nil {
 		return nil, nil, err
