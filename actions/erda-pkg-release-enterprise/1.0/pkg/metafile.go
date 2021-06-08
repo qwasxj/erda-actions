@@ -2,8 +2,6 @@ package pkg
 
 import (
 	"encoding/json"
-	"fmt"
-
 	"github.com/erda-project/erda/apistructs"
 	"github.com/erda-project/erda/pkg/filehelper"
 	"github.com/pkg/errors"
@@ -19,24 +17,49 @@ const (
 	MetaReleaseInfoType = "ToolsPkgReleaseInfo"
 )
 
+// metafile object to operate metafile
+type metafile struct {
+	oss         *OSS
+	metafile    string
+	erdaVersion string
+}
+
+// NewMetafile get an new metafile object
+func NewMetafile(oss *OSS, metafilePath string) *metafile {
+	return &metafile{
+		oss:         oss,
+		metafile:    metafilePath,
+		erdaVersion: oss.erdaVersion,
+	}
+}
+
+// GetOss get oss info of metafile object
+func (m *metafile) GetOss() *OSS {
+	return m.oss
+}
+
+// GetMetafile get metafile path
+func (m *metafile) GetMetafile() string {
+	return m.metafile
+}
+
+// ErdaVersion get erda version
+func (m *metafile) ErdaVersion() string {
+	return m.erdaVersion
+}
+
 // WriteMetaFile write metafile
-func WriteMetaFile(o *Oss, metafile string, releaseInfo map[string]string,
-	erdaVersion, releasePath string, splitOsArch bool) error {
+func (m *metafile) WriteMetaFile(releaseInfo map[string]string) error {
 
 	logrus.Infof("start to write metafile")
 
 	metaInfos := make([]apistructs.MetadataField, 0, 1)
 
-	oss := NewOss(o)
 	urlInfo := map[string]string{}
 
-	// 关联发版策略管理
+	// generate erda release package url info
 	for osArch, pkg := range releaseInfo {
-		if splitOsArch {
-			urlInfo[osArch] = oss.GenReleaseUrl(fmt.Sprintf("%s/%s/%s", releasePath, osArch, pkg))
-		} else {
-			urlInfo[osArch] = oss.GenReleaseUrl(fmt.Sprintf("%s/%s", releasePath, pkg))
-		}
+		urlInfo[osArch] = m.oss.GenReleaseUrl(osArch, pkg)
 	}
 
 	// serialize url info
@@ -49,7 +72,7 @@ func WriteMetaFile(o *Oss, metafile string, releaseInfo map[string]string,
 
 	metaInfos = append(metaInfos, apistructs.MetadataField{
 		Name:  MetaErdaVersion,
-		Value: erdaVersion,
+		Value: m.erdaVersion,
 	})
 	metaInfos = append(metaInfos, apistructs.MetadataField{
 		Name:  erdaPkgMapUrl,
@@ -58,7 +81,7 @@ func WriteMetaFile(o *Oss, metafile string, releaseInfo map[string]string,
 	})
 
 	metaByte, _ := json.Marshal(apistructs.ActionCallback{Metadata: metaInfos})
-	if err := filehelper.CreateFile(metafile, string(metaByte), 0644); err != nil {
+	if err := filehelper.CreateFile(m.metafile, string(metaByte), 0644); err != nil {
 		logrus.Warnf("failed to write metafile, %v", err)
 	}
 

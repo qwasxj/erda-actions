@@ -33,6 +33,7 @@ func copyAndCapture(w io.Writer, r io.Reader) ([]byte, error) {
 	}
 }
 
+// ExecCmd execute shell commands
 func ExecCmd(logFile, errFile *os.File, dir string, name string, args ...string) (*bytes.Buffer, error) {
 
 	var outPut, outErr []byte
@@ -71,10 +72,12 @@ func ExecCmd(logFile, errFile *os.File, dir string, name string, args ...string)
 	return bytes.NewBuffer(outPut), nil
 }
 
+// WriteLog write log
 func WriteLog(logFile *os.File, info string) {
 	_, _ = logFile.WriteString(info)
 }
 
+// IsDirExists judge dir exists or not
 func IsDirExists(path string) (bool, error) {
 	si, err := os.Stat(path)
 	if err != nil {
@@ -92,6 +95,7 @@ func IsDirExists(path string) (bool, error) {
 	return true, nil
 }
 
+// FileExist judge file exists or not
 func FileExist(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
@@ -104,6 +108,7 @@ func FileExist(path string) (bool, error) {
 	return false, err
 }
 
+// GenErdaPublicName
 func GenErdaPublicName(version, osArch string) string {
 	return fmt.Sprintf("erda-%s.%s.tar.gz", version, osArch)
 }

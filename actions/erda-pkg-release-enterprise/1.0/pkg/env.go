@@ -29,7 +29,7 @@ const (
 	False = "false"
 )
 
-// Set action env
+// InitEnv set action env
 func InitEnv(envs map[string]string) error {
 
 	for k, v := range envs {

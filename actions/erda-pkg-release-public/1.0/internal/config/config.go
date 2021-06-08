@@ -39,6 +39,9 @@ type config struct {
 	RepoErdaRelease string `env:"ACTION_REPO_ERDA_RELEASE"`
 	RepoVersion     string `env:"ACTION_REPO_VERSION"`
 
+	// release type env
+	ReleaseType string `env:"ACTION_RELEASE_TYPE"`
+
 	// oss auth info
 	OSS *pkg.Oss `env:"ACTION_OSS"`
 
@@ -71,6 +74,17 @@ func ErdaVersion() string {
 
 func RepoErdaRelease() string {
 	return configuration().RepoErdaRelease
+}
+
+func ReleaseType() string {
+
+	releaseType := configuration().ReleaseType
+
+	if releaseType != pkg.ReleaseCompletely && releaseType != pkg.ReleaseTools {
+		configuration().ReleaseType = pkg.ReleaseCommon
+	}
+
+	return configuration().ReleaseType
 }
 
 func RepoVersion() string {

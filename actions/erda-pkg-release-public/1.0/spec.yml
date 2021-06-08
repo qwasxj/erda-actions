@@ -41,6 +41,11 @@ params:
     desc: the repository of version. get from forener action git-checkout
     required: true
 
+  - name: release_type
+    type: string
+    desc: the repository of version. get from forener action git-checkout
+    required: true
+
   - name: git
     type: struct
     desc: the auth info of erda-project in github.com needed to fix when building erda release pkg before erda to public

@@ -18,7 +18,8 @@ var osArches = []string{
 func Execute() error {
 
 	// oss init
-	oss := pkg.NewOss(config.OssInfo())
+	oss := pkg.NewOSS(config.OssInfo(), config.ErdaVersion(), config.ReleaseType(),
+		pkg.OssPkgReleasePrivatePath, false)
 	if err := oss.InitOssConfig(); err != nil {
 		return err
 	}
@@ -40,7 +41,7 @@ func Execute() error {
 	if os.Getenv(pkg.ErdaToPublic) == pkg.True {
 		logrus.Infof("erda has push to public of this version %s. "+
 			"Prepare patch version info", config.ErdaVersion())
-		if err := oss.PreparePatchRelease(config.ErdaVersion()); err != nil {
+		if err := oss.PreparePatchRelease(); err != nil {
 			return err
 		}
 	} else {
@@ -55,14 +56,13 @@ func Execute() error {
 	}
 
 	// upload release install pkg of erda
-	if err := oss.ReleasePackage(releasePkgPathInfo, pkg.OssPkgReleaseBucket,
-		pkg.OssPkgReleasePrivatePath, false); err != nil {
+	if err := oss.ReleasePackage(releasePkgPathInfo); err != nil {
 		return err
 	}
 
 	// write metafile
-	if err := pkg.WriteMetaFile(oss.GetOss(), config.MetaFile(), releasePkgInfo,
-		config.ErdaVersion(), pkg.OssPkgReleasePrivatePath, false); err != nil {
+	metafile := pkg.NewMetafile(oss, config.MetaFile())
+	if err := metafile.WriteMetaFile(releasePkgInfo); err != nil {
 		return err
 	}
 

@@ -17,13 +17,14 @@ var osArches = []string{
 func Execute() error {
 
 	// oss init
-	oss := pkg.NewOss(config.OssInfo())
+	oss := pkg.NewOSS(config.OssInfo(), config.ErdaVersion(), config.ReleaseType(),
+		pkg.OssPkgReleasePublicPath, false)
 	if err := oss.InitOssConfig(); err != nil {
 		return err
 	}
 
 	// prepare erda patch version info to /tmp/
-	if err := oss.PreparePatchRelease(config.ErdaVersion()); err != nil {
+	if err := oss.PreparePatchRelease(); err != nil {
 		return err
 	}
 
@@ -46,14 +47,13 @@ func Execute() error {
 	}
 
 	// upload release install pkg of erda
-	if err := oss.ReleasePackage(releasePkgPathInfo, pkg.OssPkgReleaseBucket,
-		pkg.OssPkgReleasePublicPath, false); err != nil {
+	if err := oss.ReleasePackage(releasePkgPathInfo); err != nil {
 		return err
 	}
 
 	// write metafile
-	if err := pkg.WriteMetaFile(oss.GetOss(), config.MetaFile(), releasePkgInfo,
-		config.ErdaVersion(), pkg.OssPkgReleasePublicPath, false); err != nil {
+	metafile := pkg.NewMetafile(oss, config.MetaFile())
+	if err := metafile.WriteMetaFile(releasePkgInfo); err != nil {
 		return err
 	}
 

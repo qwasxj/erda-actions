@@ -12,86 +12,146 @@ import (
 )
 
 const (
+
+	// const related to archive and release
 	OssArchiveBucket         = "erda-release"
 	OssArchivePath           = "archived-versions"
 	OssPkgReleaseBucket      = "erda-release"
 	OssPkgReleasePublicPath  = "erda"
 	OssPkgReleasePrivatePath = "enterprise"
 
+	// const related to oss acl
 	//OssAclPublicReadWrite = "public-read-write"
 	OssAclPublicRead = "public-read"
 	//OssAclPrivate         = "private"
 	//OssAclDefault         = "default"
+
+	// const related to release type
+	// just common release, has not test completely
+	ReleaseCommon = "common"
+
+	// released by sre, just released to test tools, avoid erda's templates reflecting
+	ReleaseTools = "tools"
+
+	// go through completely testing, the quality of release pkg is guaranteed
+	ReleaseCompletely = "completely"
 )
 
+// Oss object contains oss info used to auth with oss server
 type Oss struct {
 	OssEndPoint        string `json:"endpoint"`
 	OssAccessKeyId     string `json:"accessKeyID"`
 	OssAccessKeySecret string `json:"accessKeySecret"`
 }
 
-type oss struct {
+// OSS object release to erda-pkg-release action
+type OSS struct {
+	// oss Oss info, use to auth with oss
 	oss *Oss
+
+	// erdaVersion version of erda released package
+	erdaVersion string
+
+	// releaseBucket bucket in oss which erda pkg release to
+	releaseBucket string
+
+	// releaseType type of erda release pkg, reference to ReleaseCommon | ReleaseTools | ReleaseCompletely
+	// reflecting path in oss of erda release package
+	releaseType string
+
+	// policy of release pkg, decide if osArch type as a dir
+	osArch bool
+
+	// actionReleaseBasePath related to erda-pkg-release-* action
+	// judge whether the erda package release path is enterprise or erda
+	actionReleaseBasePath string
 }
 
-func NewOss(o *Oss) *oss {
-	return &oss{
-		o,
+// NewOSS get OSS object
+func NewOSS(o *Oss, erdaVersion, releaseType, actionPath string, osArch bool) *OSS {
+	return &OSS{
+		oss:                   o,
+		erdaVersion:           erdaVersion,
+		releaseBucket:         OssPkgReleaseBucket,
+		releaseType:           releaseType,
+		osArch:                osArch,
+		actionReleaseBasePath: actionPath,
 	}
 }
 
-func (o *oss) GetOss() *Oss {
+// GetOss get oss info in object OSS
+func (o *OSS) Oss() *Oss {
 	return o.oss
 }
 
-func (o *oss) GenReleaseUrl(path string) string {
+// ErdaVersion get erdaVersion info in OSS
+func (o *OSS) ErdaVersion() string {
+	return o.erdaVersion
+}
+
+// ErdaVersion get releaseBucket info in OSS
+func (o *OSS) ReleaseBucket() string {
+	return o.releaseBucket
+}
+
+// ErdaVersion get releaseType info in OSS
+func (o *OSS) ReleaseType() string {
+	return o.releaseType
+}
+
+// ErdaVersion get osArch info in OSS
+func (o *OSS) OsArch() bool {
+	return o.osArch
+}
+
+// InitOssConfig init oss client's config in erda-pkg-release-* action
+func (o *OSS) InitOssConfig() error {
+	return o.oss.InitOssConfig()
+}
+
+// GenReleasePath generate base release path
+func (o *OSS) GenReleasePath(osArch, path string) string {
+	// policy of release pkg, decide if osArch type as a dir
+	if o.osArch {
+		return fmt.Sprintf("%s/%s/%s/%s", o.releaseType, o.actionReleaseBasePath, osArch, path)
+	}
+
+	return fmt.Sprintf("%s/%s/%s", o.releaseType, o.actionReleaseBasePath, path)
+}
+
+// GenReleaseUrl generate erda release pkg url which can be used to get erda release package when access in browser
+func (o *OSS) GenReleaseUrl(osArch, pkg string) string {
 	return fmt.Sprintf("http://%s.%s/%s",
-		OssPkgReleaseBucket, o.oss.OssEndPoint, path)
+		o.releaseBucket, o.oss.OssEndPoint, o.GenReleasePath(osArch, pkg))
 }
 
-func (o *oss) OssRemotePath(bucket, path string) string {
-
-	return fmt.Sprintf("oss://%s/%s", bucket, path)
-}
-
-func (o *oss) ReleasePackage(releasePathInfo map[string]string, releaseBucket,
-	releasePath string, splitOsArch bool) error {
+// ReleasePackage push erda release pkg to oss
+func (o *OSS) ReleasePackage(releasePathInfo map[string]string) error {
 
 	// upload release installing pkg of erda
-	if len(releasePathInfo) != 0 {
-
-		for osArch, pkgPath := range releasePathInfo {
-			if !path.IsAbs(pkgPath) {
-				return errors.Errorf("release pkg path is "+
-					"not a absolute path: %s", pkgPath)
-			}
-
-			_, pkgName := path.Split(pkgPath)
-
-			ossReleasePath := ""
-
-			// 发布包管理策略
-			if splitOsArch {
-				ossReleasePath = fmt.Sprintf("%s/%s/%s", releasePath, osArch, pkgName)
-			} else {
-				ossReleasePath = fmt.Sprintf("%s/%s", releasePath, pkgName)
-			}
-
-			if err := o.UploadFile(pkgPath, releaseBucket, ossReleasePath, OssAclPublicRead); err != nil {
-				return err
-			}
+	for osArch, pkgPath := range releasePathInfo {
+		if !path.IsAbs(pkgPath) {
+			return errors.Errorf("release pkg path is "+
+				"not a absolute path: %s", pkgPath)
 		}
 
+		_, pkgName := path.Split(pkgPath)
+		ossReleasePath := o.GenReleasePath(osArch, pkgName)
+
+		if err := o.oss.UploadFile(pkgPath, o.releaseBucket, ossReleasePath, OssAclPublicRead); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func (o *oss) PreparePatchRelease(version string) error {
+// PreparePatchRelease prepare erda release info to action
+func (o *OSS) PreparePatchRelease() error {
 
-	// download release
-	releasePath := fmt.Sprintf("%s/%s", OssArchivePath, version)
-	if err := o.DownloadDir("/tmp", OssArchiveBucket, releasePath); err != nil {
+	// download release from oss
+	releasePath := fmt.Sprintf("%s/%s", OssArchivePath, o.erdaVersion)
+	if err := o.oss.DownloadDir("/tmp", OssArchiveBucket, releasePath); err != nil {
 		return errors.WithMessage(err, "cp release patch to /tmp/")
 	}
 
@@ -104,7 +164,7 @@ func (o *oss) PreparePatchRelease(version string) error {
 
 	// tar release
 	for _, tar := range tars {
-		if _, err := ExecCmd(os.Stdout, os.Stderr, fmt.Sprintf("/tmp/%s/extensions", version),
+		if _, err := ExecCmd(os.Stdout, os.Stderr, fmt.Sprintf("/tmp/%s/extensions", o.erdaVersion),
 			"tar", "-zxvf", tar); err != nil {
 			return errors.WithMessage(err, fmt.Sprintf("decompress %s failed", tar))
 		}
@@ -113,7 +173,14 @@ func (o *oss) PreparePatchRelease(version string) error {
 	return nil
 }
 
-func (o *oss) UploadFile(local, bucket, path, acl string) error {
+// OssRemotePath generate oss remote access path
+func (o *Oss) OssRemotePath(bucket, path string) string {
+
+	return fmt.Sprintf("oss://%s/%s", bucket, path)
+}
+
+// UploadFile upload file to oss with --force parameter
+func (o *Oss) UploadFile(local, bucket, path, acl string) error {
 
 	exists, err := FileExist(local)
 	if err != nil {
@@ -139,7 +206,8 @@ func (o *oss) UploadFile(local, bucket, path, acl string) error {
 	return nil
 }
 
-func (o *oss) UploadDir(dir, bucket, path, acl string) error {
+// UploadDir upload dir to oss with --force parameter
+func (o *Oss) UploadDir(dir, bucket, path, acl string) error {
 
 	exists, err := IsDirExists(dir)
 	if err != nil {
@@ -165,7 +233,8 @@ func (o *oss) UploadDir(dir, bucket, path, acl string) error {
 	return nil
 }
 
-func (o *oss) DownloadFile(local, bucket, path string) error {
+// DownloadFile download file to local with --force parameter
+func (o *Oss) DownloadFile(local, bucket, path string) error {
 	remote := o.OssRemotePath(bucket, path)
 
 	_, err := ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", "-f", remote, local)
@@ -177,7 +246,8 @@ func (o *oss) DownloadFile(local, bucket, path string) error {
 	return nil
 }
 
-func (o *oss) DownloadDir(parent, bucket, path string) error {
+// DownloadDir download dir to local with --force parameter
+func (o *Oss) DownloadDir(parent, bucket, path string) error {
 	remote := o.OssRemotePath(bucket, path)
 
 	_, err := ExecCmd(os.Stdout, os.Stderr, "", "ossutil64", "cp", "-rf", remote, parent)
@@ -189,7 +259,8 @@ func (o *oss) DownloadDir(parent, bucket, path string) error {
 	return nil
 }
 
-func (o *oss) InitOssConfig() error {
+// InitOssConfig init oss client's config to local
+func (o *Oss) InitOssConfig() error {
 
 	logrus.Info("start to init oss config...")
 	// current user in action
@@ -204,7 +275,7 @@ func (o *oss) InitOssConfig() error {
 
 	// oss config
 	ossConfig := fmt.Sprintf("[Credentials]\nlanguage=CH\nendpoint=%s\naccessKeyID="+
-		"%s\naccessKeySecret=%s", o.oss.OssEndPoint, o.oss.OssAccessKeyId, o.oss.OssAccessKeySecret)
+		"%s\naccessKeySecret=%s", o.OssEndPoint, o.OssAccessKeyId, o.OssAccessKeySecret)
 	if err := ioutil.WriteFile(ossConfigPath, []byte(ossConfig), 0666); err != nil {
 		logrus.Error(err)
 		return err
