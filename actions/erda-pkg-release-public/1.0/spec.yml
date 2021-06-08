@@ -44,7 +44,7 @@ params:
   - name: release_type
     type: string
     desc: the repository of version. get from forener action git-checkout
-    required: true
+    required: false
 
   - name: git
     type: struct
