@@ -52,6 +52,12 @@ type OSS struct {
 	// erdaVersion version of erda released package
 	erdaVersion string
 
+	// archiveBucket bucket in oss which erda archive to
+	archiveBucket string
+
+	// archiveBasePath base archive path in oss which erda archive to
+	archiveBasePath string
+
 	// releaseBucket bucket in oss which erda pkg release to
 	releaseBucket string
 
@@ -72,6 +78,8 @@ func NewOSS(o *Oss, erdaVersion, releaseType, actionPath string, osArch bool) *O
 	return &OSS{
 		oss:                   o,
 		erdaVersion:           erdaVersion,
+		archiveBucket:         OssArchiveBucket,
+		archiveBasePath:       OssArchivePath,
 		releaseBucket:         OssPkgReleaseBucket,
 		releaseType:           releaseType,
 		osArch:                osArch,
@@ -107,6 +115,10 @@ func (o *OSS) OsArch() bool {
 // InitOssConfig init oss client's config in erda-pkg-release-* action
 func (o *OSS) InitOssConfig() error {
 	return o.oss.InitOssConfig()
+}
+
+func (o *OSS) GenArchivePath() string {
+	return fmt.Sprintf("%s/%s", o.archiveBasePath, o.erdaVersion)
 }
 
 // GenReleasePath generate base release path
@@ -150,8 +162,8 @@ func (o *OSS) ReleasePackage(releasePathInfo map[string]string) error {
 func (o *OSS) PreparePatchRelease() error {
 
 	// download release from oss
-	releasePath := fmt.Sprintf("%s/%s", OssArchivePath, o.erdaVersion)
-	if err := o.oss.DownloadDir("/tmp", OssArchiveBucket, releasePath); err != nil {
+	archivePath := o.GenArchivePath()
+	if err := o.oss.DownloadDir("/tmp", o.archiveBucket, archivePath); err != nil {
 		return errors.WithMessage(err, "cp release patch to /tmp/")
 	}
 
