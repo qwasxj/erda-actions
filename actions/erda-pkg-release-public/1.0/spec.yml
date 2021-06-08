@@ -18,7 +18,7 @@ version: 1.0
 type: action
 category: deploy_management
 desc: >-
-  release erda install package for enterprise: erda-$erda_version.$os_arch.tar.gz
+  release erda install package for public: erda-$erda_version.$os_arch.tar.gz
 
 public: true
 supportedVersion:
@@ -31,6 +31,11 @@ params:
     desc: the version of erda. use erda tag version
     required: true
 
+  - name: release_type
+    type: string
+    desc: erda release type, common | tools | completely
+    required: false
+
   - name: repo_erda_release
     type: string
     desc: the repository of erda-release. get from forener action git-checkout
@@ -40,11 +45,6 @@ params:
     type: string
     desc: the repository of version. get from forener action git-checkout
     required: true
-
-  - name: release_type
-    type: string
-    desc: erda release type, common | tools | completely
-    required: false
 
   - name: git
     type: struct
