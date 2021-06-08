@@ -43,7 +43,7 @@ params:
 
   - name: release_type
     type: string
-    desc: the repository of version. get from forener action git-checkout
+    desc: erda release type, common | tools | completely
     required: false
 
   - name: git
