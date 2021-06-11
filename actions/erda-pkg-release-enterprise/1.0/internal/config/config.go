@@ -84,7 +84,7 @@ func ReleaseType() string {
 
 	releaseType := configuration().ReleaseType
 
-	if releaseType != pkg.ReleaseCompletely && releaseType != pkg.ReleaseTools {
+	if releaseType != pkg.ReleaseCompletely && releaseType != pkg.ReleaseTools && releaseType != pkg.ReleaseOffline {
 		configuration().ReleaseType = pkg.ReleaseCommon
 	}
 

@@ -33,7 +33,7 @@ params:
 
   - name: release_type
     type: string
-    desc: erda release type, common | tools | completely
+    desc: erda release type, common | tools | completely | offline
     required: false
 
   - name: repo_erda_tools

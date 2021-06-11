@@ -99,6 +99,16 @@ func EnterprisePkgRelease() error {
 		return errors.WithMessage(err, "build enterprise erda install package")
 	}
 
+	// doing something with offline release
+	if config.ReleaseType() == pkg.ReleaseOffline {
+		logrus.Info("release erda package for offline cluster...")
+		_, err = pkg.ExecCmd(os.Stdout, os.Stderr, TmpRepoToolsPath(), "bash", "-x", "offline/build.sh")
+		if err != nil {
+			return errors.WithMessage(err, "deal with offline build script")
+		}
+		logrus.Info("release erda package for offline cluster successfully!!!")
+	}
+
 	// compress enterprise install package of erda
 	_, err = pkg.ExecCmd(os.Stdout, os.Stderr, TmpRepoToolsPath(), "make", "tar")
 	if err != nil {

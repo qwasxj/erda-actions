@@ -33,6 +33,9 @@ const (
 	// released by sre, just released to test tools, avoid erda's templates reflecting
 	ReleaseTools = "tools"
 
+	// pkg released with ReleaseOffline used for erda cluster without internet
+	ReleaseOffline = "offline"
+
 	// go through completely testing, the quality of release pkg is guaranteed
 	ReleaseCompletely = "completely"
 )
@@ -61,7 +64,7 @@ type OSS struct {
 	// releaseBucket bucket in oss which erda pkg release to
 	releaseBucket string
 
-	// releaseType type of erda release pkg, reference to ReleaseCommon | ReleaseTools | ReleaseCompletely
+	// releaseType type of erda release pkg, reference to ReleaseCommon | ReleaseTools | ReleaseCompletely | ReleaseOffline
 	// reflecting path in oss of erda release package
 	releaseType string
 
