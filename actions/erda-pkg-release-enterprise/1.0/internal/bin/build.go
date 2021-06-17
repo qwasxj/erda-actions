@@ -202,7 +202,7 @@ if [[ -f "$DICE_VERSION_PATH"/dice.yaml ]]; then
 fi
 rm -rf "$TEMP"
 
-cat ./dice-tools/versionpackage/dice.yaml | grep '^\s*image:' | sed 's/^\s*image:\s*//' | sort -u >> ./offline/dice.txt
+cat ./dice-tools/versionpackage/dice.yaml | grep '^\s*image:' | sed 's/^\s*image:\s*//' | tr -d '"' | tr -d "'" | sort -u >> ./offline/dice.txt
 find ./dice-tools/versionpackage/extensions -name dice.yml -exec grep -F image: {} \; | sed -e 's/^\s*image:\s*//' -e 's/^\s*DEFAULT_DEP_CACHE_IMAGE:\s*//' | sed '/^\s*$/d' | sort -u > ./offline/ext.txt
 
 echo "build tools successfully..."
