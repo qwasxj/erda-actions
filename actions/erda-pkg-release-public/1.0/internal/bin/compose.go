@@ -41,29 +41,8 @@ spec:
 END
 
 ## 组合各个 dice.yml 进 dice operator spec 中
-echo "  dice:" >> ${deploy_yaml}
-cat "$version"/releases/dice/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
-echo >> ${deploy_yaml}
-echo "  diceUI:" >> ${deploy_yaml}
-cat "$version"/releases/dice-ui/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
-echo >> ${deploy_yaml}
 echo "  uc:" >> ${deploy_yaml}
 cat "$version"/releases/uc/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
-echo >> ${deploy_yaml}
-echo "  spotAnalyzer:" >> ${deploy_yaml}
-cat "$version"/releases/spot-analyzer/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
-echo >> ${deploy_yaml}
-echo "  spotTelegraf:" >> ${deploy_yaml}
-cat "$version"/releases/spot-telegraf/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
-echo >> ${deploy_yaml}
-echo "  spotFilebeat:" >> ${deploy_yaml}
-cat "$version"/releases/spot-filebeat/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
-echo >> ${deploy_yaml}
-echo "  tmc:" >> ${deploy_yaml}
-cat "$version"/releases/tmc/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
-echo >> ${deploy_yaml}
-echo "  spotMonitor:" >> ${deploy_yaml}
-cat "$version"/releases/spot-monitor/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
 echo >> ${deploy_yaml}
 
 #############################################
@@ -138,6 +117,66 @@ if [ -f "$version"/releases/init/dice.yml ]; then
     echo >> ${deploy_yaml}
 fi
 
+echo "  dice:" >> ${deploy_yaml}
+if [ -f "$version"/releases/dice/dice.yml ]; then
+    cat "$version"/releases/dice/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
+    echo >> ${deploy_yaml}
+else
+    cat "$version"/releases/erda/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
+    echo >> ${deploy_yaml}
+fi
+
+echo "  diceUI:" >> ${deploy_yaml}
+if [ -f "$version"/releases/dice-ui/dice.yml ]; then
+    cat "$version"/releases/dice-ui/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
+    echo >> ${deploy_yaml}
+else
+    cat "$version"/releases/erda-ui/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
+    echo >> ${deploy_yaml}
+fi
+
+echo "  spotAnalyzer:" >> ${deploy_yaml}
+if [ -f "$version"/releases/spot-analyzer/dice.yml ]; then
+    cat "$version"/releases/spot-analyzer/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
+    echo >> ${deploy_yaml}
+else
+    cat "$version"/releases/erda-analyzer/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
+    echo >> ${deploy_yaml}
+fi
+
+echo "  spotTelegraf:" >> ${deploy_yaml}
+if [ -f "$version"/releases/spot-telegraf/dice.yml ]; then
+    cat "$version"/releases/spot-telegraf/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
+    echo >> ${deploy_yaml}
+else
+    cat "$version"/releases/telegraf/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
+    echo >> ${deploy_yaml}
+fi
+
+echo "  spotFilebeat:" >> ${deploy_yaml}
+if [ -f "$version"/releases/spot-filebeat/dice.yml ]; then
+    cat "$version"/releases/spot-filebeat/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
+    echo >> ${deploy_yaml}
+else
+    cat "$version"/releases/beats/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
+    echo >> ${deploy_yaml}
+fi
+
+echo "  tmc:" >> ${deploy_yaml}
+if [ -f "$version"/releases/tmc/dice.yml ]; then
+    cat "$version"/releases/tmc/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
+    echo >> ${deploy_yaml}
+else
+    cat "$version"/releases/erda-tmc/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
+    echo >> ${deploy_yaml}
+fi
+
+echo "  spotMonitor:" >> ${deploy_yaml}
+if [ -f "$version"/releases/spot-monitor/dice.yml ]; then
+    cat "$version"/releases/spot-monitor/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
+    echo >> ${deploy_yaml}
+fi
+
 ## 新增组件，删除组件需要兼容老版本 end......
 #############################################
 #############################################
@@ -158,5 +197,4 @@ rm -f ${fdp_deploy_yaml}
 
 if [ -f dice.yaml.work-e ]; then
   rm dice.yaml.work-e
-fi
-`
+fi`
