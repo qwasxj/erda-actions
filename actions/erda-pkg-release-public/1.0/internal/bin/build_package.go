@@ -59,8 +59,4 @@ cd "$VERSION_PATH" &&
 ./compose.sh "$ERDA_VERSION"
 cp -rf erda.yaml "$ERDA_YAML"
 cd "$CURRENT_PATH" &&
-
-
-## mv to action to do
-wget https://raw.githubusercontent.com/erda-project/erda/release/"$MAIN_BETA_VERSION"/docs/guides/deploy/How-to-install-the-Erda.md -O ./erda/How-to-install-the-Erda.md
 `
