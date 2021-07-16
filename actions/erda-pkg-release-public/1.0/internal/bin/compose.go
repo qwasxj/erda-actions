@@ -162,11 +162,13 @@ else
     echo >> ${deploy_yaml}
 fi
 
-echo "  tmc:" >> ${deploy_yaml}
 if [ -f "$version"/releases/tmc/dice.yml ]; then
+    echo "  tmc:" >> ${deploy_yaml}
     cat "$version"/releases/tmc/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
     echo >> ${deploy_yaml}
-else
+fi
+if [ -f "$version"/releases/erda-tmc/dice.yml ]; then
+    echo "  tmc:" >> ${deploy_yaml}
     cat "$version"/releases/erda-tmc/dice.yml | sed 's/^/    /g' >> ${deploy_yaml}
     echo >> ${deploy_yaml}
 fi

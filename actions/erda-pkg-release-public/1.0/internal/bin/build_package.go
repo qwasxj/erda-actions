@@ -62,5 +62,8 @@ cd "$CURRENT_PATH" &&
 
 
 ## mv to action to do
-wget https://raw.githubusercontent.com/erda-project/erda/release/"$MAIN_BETA_VERSION"/docs/guides/deploy/How-to-install-the-Erda.md -O ./erda/How-to-install-the-Erda.md
+rm -rf erda/How-to-install-Erda.md
+rm -rf erda/How-to-install-Erda-zh.md
+wget https://raw.githubusercontent.com/erda-project/erda/release/${MAIN_BETA_VERSION}/docs/guides/deploy/How-to-install-Erda.md -O erda/How-to-install-Erda.md
+wget https://raw.githubusercontent.com/erda-project/erda/release/${MAIN_BETA_VERSION}/docs/guides/deploy/How-to-install-Erda-zh.md -O erda/How-to-install-Erda-zh.md
 `
